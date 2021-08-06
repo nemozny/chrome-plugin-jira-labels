@@ -129,6 +129,8 @@ function addQA() {
     }
     json = JSON.stringify(body)
     xhr.send(json);
+
+    window.location.reload();
   
     // jira = document.getElementsByName('ajs-issue-key')[0].getAttribute('content')
     // console.log(jira)
@@ -168,6 +170,8 @@ function addStar() {
     }
     json = JSON.stringify(body)
     xhr.send(json);
+
+    window.location.reload();
   
     // jira = document.getElementsByName('ajs-issue-key')[0].getAttribute('content')
     // console.log(jira)
@@ -207,6 +211,8 @@ function addDoc() {
     }
     json = JSON.stringify(body)
     xhr.send(json);
+
+    window.location.reload();
   
     // jira = document.getElementsByName('ajs-issue-key')[0].getAttribute('content')
     // console.log(jira)
@@ -247,6 +253,8 @@ function addLarge() {
     }
     json = JSON.stringify(body)
     xhr.send(json);
+
+    window.location.reload();
   
     // jira = document.getElementsByName('ajs-issue-key')[0].getAttribute('content')
     // console.log(jira)
