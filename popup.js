@@ -139,7 +139,7 @@ function addQA() {
 }
 
 function addStar() {
-  let label = "QA-StarTest-Not-Required"
+  let label = "QA-AutomatedTest-Not-Required"
   function addLabels(label) {
     let jira = document.getElementsByName('ajs-issue-key')[0].getAttribute('content')
     let url = document.getElementsByName('ajs-base-url')[0].getAttribute('content')
@@ -246,7 +246,7 @@ function addLarge() {
         "labels":
           [
             { "add": "Documentation_NotRequired" },
-            { "add": "QA-StarTest-Not-Required" },
+            { "add": "QA-AutomatedTest-Not-Required" },
             { "add": "ManualTesting_NotRequired" }
           ]
       }
