@@ -9,9 +9,6 @@ function updateTicket(payload) {
   let url = document.getElementsByName('ajs-base-url')[0].getAttribute('content')
   if (typeof(jira) == 'undefined' || typeof(url) == 'undefined') {
     console.log("Not in Jira");
-    console.log(base_url);
-    console.log(url);
-    console.log(jira);
     return;
   }
 
@@ -24,7 +21,7 @@ function updateTicket(payload) {
   xhr.onreadystatechange = function () { // Call a function when the state changes.
     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
       // Request finished. Do processing here.
-      console.log(xhr.responseText);
+      // console.log(xhr.responseText);
     }
   }
 
