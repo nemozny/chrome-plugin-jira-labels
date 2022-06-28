@@ -1,11 +1,8 @@
 {
   "name": "The Black Label",
   "description": "Put a label on!",
-  "version": "1.0",
+  "version": "2.0",
   "manifest_version": 3,
-  // "background": {
-  //   "service_worker": "background.js"
-  // },
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
