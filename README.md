@@ -4,14 +4,14 @@ This is a Chrome plugin that you can add using the Chrome Developer mode (not fr
 Please see [https://developer.chrome.com/docs/extensions/mv3/getstarted/](https://developer.chrome.com/docs/extensions/mv3/getstarted/) on how to enable the Developer mode.
 
 ## How does it work
-The plugin parses the page you have open and looks for Jira metadata. If you open the source for any Jira ticket, you will find this
+This plugin parses the page you have open in Chrome and searches for Jira metadata. If you open the source for any Jira ticket, you will find this
 ```html
     <meta name="ajs-base-url" content="https://jira.domain.com">
     <meta name="ajs-issue-key" content="ABC-1234">
 ```
-It parses these fields for your Jira URL and Jira ticket key. Then it constructs the REST endpoint for updating the ticket.
+This plugin parses these meta fields for your Jira URL and Jira ticket key. Then it constructs the REST endpoint for updating the ticket.
 
-When you click a button to update the labels, it will call the REST endpoint with your preconfigured payload.
+When you click a button to update the labels, the plugin will call the REST endpoint with your preconfigured payload.
 ```js
     args: [{
       "labels" : 

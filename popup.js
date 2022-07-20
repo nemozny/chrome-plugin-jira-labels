@@ -5,16 +5,24 @@ let Large = document.getElementById("Large");
 let Small = document.getElementById("Small");
 
 function updateTicket(payload) {
-  let jira = document.getElementsByName('ajs-issue-key')[0].getAttribute('content')
-  let url = document.getElementsByName('ajs-base-url')[0].getAttribute('content')
+  let url = document.getElementsByName('ajs-base-url')[0].getAttribute('content');
+  let jira = document.getElementsByName('ajs-issue-key')[0];
+
+  // data-issue-key should be used when editing with in a filters window
+  if(typeof(jira) == 'undefined') {
+    jira = document.getElementById("s-helper-panel-content").getAttribute('data-issue-key');
+  } else {
+    jira = jira.getAttribute('content');
+  }
+
   if (typeof(jira) == 'undefined' || typeof(url) == 'undefined') {
     console.log("Not in Jira");
     return;
   }
 
   var xhr = new XMLHttpRequest();
-  let endpoint = url + "/rest/api/2/issue/" + jira
-  xhr.open("PUT", endpoint)
+  let endpoint = url + "/rest/api/2/issue/" + jira;
+  xhr.open("PUT", endpoint);
 
   xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -23,7 +31,7 @@ function updateTicket(payload) {
       // Request finished. Do processing here.
       // console.log(xhr.responseText);
     }
-  }
+  };
 
   body = {
     "update": payload
