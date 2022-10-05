@@ -1,8 +1,10 @@
 let QA = document.getElementById("QA");
 let Doc = document.getElementById("Documentation");
 let Star = document.getElementById("Startest");
-let Large = document.getElementById("Large");
-let Small = document.getElementById("Small");
+let Customer = document.getElementById("Customer");
+let Infra = document.getElementById("Infra");
+let Visible = document.getElementById("Visible");
+let Invisible = document.getElementById("Invisible");
 
 function updateTicket(payload) {
   let url = document.getElementsByName('ajs-base-url')[0].getAttribute('content');
@@ -33,10 +35,7 @@ function updateTicket(payload) {
     }
   };
 
-  body = {
-    "update": payload
-  };
-  json = JSON.stringify(body);
+  json = JSON.stringify(payload);
   xhr.send(json);
 
   window.location.reload();
@@ -49,10 +48,12 @@ QA.addEventListener("click", async () => {
     target: { tabId: tab.id },
     function: updateTicket,
     args: [{
-      "labels" : 
-        [ 
-          { "add": "ManualTesting_NotRequired" }
-        ]
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "ManualTesting_NotRequired" }
+          ]
+      }
     }]
   });
 });
@@ -64,10 +65,12 @@ Doc.addEventListener("click", async () => {
     target: { tabId: tab.id },
     function: updateTicket,
     args: [{
-      "labels" : 
-        [ 
-          { "add": "Documentation_NotRequired" }
-        ]
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "Documentation_NotRequired" }
+          ]
+      }
     }]
   });
 });
@@ -79,43 +82,102 @@ Star.addEventListener("click", async () => {
     target: { tabId: tab.id },
     function: updateTicket,
     args: [{
-      "labels" : 
-        [ 
-          { "add": "QA-AutomatedTest-Not-Required" }
-        ]
-    }]
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "QA-AutomatedTest-Not-Required" }
+          ]
+      }
+  }]
   });
 });
 
-Large.addEventListener("click", async () => {
+Customer.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: updateTicket,
     args: [{
-      "labels" : 
-        [ 
-          { "add": "Documentation_NotRequired" },
-          { "add": "QA-AutomatedTest-Not-Required" },
-          { "add": "ManualTesting_NotRequired" }
-        ]
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "Documentation_NotRequired" },
+            { "add": "QA-AutomatedTest-Not-Required" },
+            { "add": "ManualTesting_NotRequired" }
+          ]
+      },
+      "fields" : {
+          "customfield_12770" : {"value" : "Development"},
+          "customfield_15470" : {"value" : "Refactoring Non-Customer Visible"}
+      }
     }]
   });
 });
 
-Small.addEventListener("click", async () => {
+Infra.addEventListener("click", async () => {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     function: updateTicket,
     args: [{
-      "labels" : 
-        [ 
-          { "add": "QA-AutomatedTest-Not-Required" },
-          { "add": "ManualTesting_NotRequired" }
-        ]
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "QA-AutomatedTest-Not-Required" },
+            { "add": "ManualTesting_NotRequired" }
+          ]
+      },
+      "fields" : {
+          "customfield_12770" : {"value" : "Development"},
+          "customfield_15470" : {"value" : "Infrastructure/Framework"}
+      }
+    }]
+  });
+});
+
+Visible.addEventListener("click", async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: updateTicket,
+    args: [{
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "Documentation_NotRequired" },
+            { "add": "QA-AutomatedTest-Not-Required" },
+            { "add": "ManualTesting_NotRequired" }
+          ]
+      },
+      "fields" : {
+          "customfield_12770" : {"value" : "Development"},
+          "customfield_15470" : {"value" : "Refactoring Customer Visible"}
+      }
+    }]
+  });
+});
+
+Invisible.addEventListener("click", async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: updateTicket,
+    args: [{
+      "update" : {
+        "labels" : 
+          [ 
+            { "add": "QA-AutomatedTest-Not-Required" },
+            { "add": "ManualTesting_NotRequired" }
+          ]
+      },
+      "fields" : {
+          "customfield_12770" : {"value" : "Development"},
+          "customfield_15470" : {"value" : "Refactoring Non-Customer Visible"}
+      }
     }]
   });
 });
