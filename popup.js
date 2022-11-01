@@ -109,7 +109,7 @@ Customer.addEventListener("click", async () => {
       },
       "fields" : {
           "customfield_12770" : {"value" : "Development"},
-          "customfield_15470" : {"value" : "Refactoring Non-Customer Visible"}
+          "customfield_15470" : {"value" : "Customer Feature"}
       }
     }]
   });
