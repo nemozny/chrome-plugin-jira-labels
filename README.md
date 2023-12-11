@@ -3,6 +3,9 @@ This is a Chrome plugin that you can add using the Chrome Developer mode (not fr
 
 Please see [https://developer.chrome.com/docs/extensions/mv3/getstarted/](https://developer.chrome.com/docs/extensions/mv3/getstarted/) on how to enable the Developer mode.
 
+## Update
+Now with Jira Cloud support!
+
 ## How does it work
 This plugin parses the page you have open in Chrome and searches for Jira metadata. If you open the source for any Jira ticket, you will find this
 ```html
@@ -10,6 +13,16 @@ This plugin parses the page you have open in Chrome and searches for Jira metada
     <meta name="ajs-issue-key" content="ABC-1234">
 ```
 This plugin parses these meta fields for your Jira URL and Jira ticket key. Then it constructs the REST endpoint for updating the ticket.
+
+In the case of Cloud Jira the plugin parses
+```
+document.title
+```
+to get the issue key and
+```
+document.baseURI
+```
+to get the Jira URL.
 
 When you click a button to update the labels, the plugin will call the REST endpoint with your preconfigured payload.
 ```js
@@ -27,6 +40,11 @@ Checkout the code, open your favorite editor and change
 
 * [popup.html](https://github.com/nemozny/chrome-plugin-jira-labels/blob/master/popup.html) - Add your buttons. Change that silly title and picture.
 * [popup.js](https://github.com/nemozny/chrome-plugin-jira-labels/blob/master/popup.js) - Change HTML functions related to your buttons and enter your Jira labels. You may need to change the endpoint too, based on your Jira instance (server/cloud and version dependent) - "/rest/api/2/issue/".
+
+Plus edit the configuration file in *options.js* and *options.html*.
+
+## Set up your custom variables
+Click Options and enter values for your custom variables.
 
 ## Enable the plugin
 Load the plugin in the Chrome Developer mode.
