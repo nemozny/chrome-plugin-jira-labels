@@ -6,23 +6,90 @@ let Infra = document.getElementById("Infra");
 let Visible = document.getElementById("Visible");
 let Invisible = document.getElementById("Invisible");
 
-function updateTicket(payload) {
-  let url = document.getElementsByName('ajs-base-url')[0].getAttribute('content');
-  let jira = document.getElementsByName('ajs-issue-key')[0];
 
-  // data-issue-key should be used when editing with in a filters window
-  if(typeof(jira) == 'undefined') {
-    jira = document.getElementById("s-helper-panel-content").getAttribute('data-issue-key');
+
+async function restore_options() {
+  let result = null;
+  result = await chrome.storage.sync.get(["workCategory"]);
+  let work_category = result.workCategory;
+  result = await chrome.storage.sync.get(["featureType"]);
+  let feature_type = result.featureType;
+
+  return [work_category, feature_type];
+};
+
+function updateTicket(payload) {
+  let jira = null;
+  let url = null;
+
+  // On-premise
+  jira = document.getElementsByName('ajs-issue-key');
+  if(typeof(jira) != 'undefined' && jira.length > 0) {
+    jira = jira[0];
   } else {
-    jira = jira.getAttribute('content');
+    jira = null;
   }
 
-  if (typeof(jira) == 'undefined' || typeof(url) == 'undefined') {
+  // data-issue-key should be used when editing with in a filters window
+  if(jira == null) {
+    jira = document.getElementById("s-helper-panel-content");
+    if(jira != null && jira.length > 0) {
+      jira = jira.getAttribute('data-issue-key');
+    } else {
+      jira = null;
+    }
+  }
+  
+  // if(typeof(jira) == 'undefined') {
+  //   jira = jira.getAttribute('content');
+  // }
+
+  // Switch to cloud Jira
+  if(jira == null) {
+    title = document.title;
+    let issue_key = title.match(/\[(.+)\]/i);
+    if (issue_key.length > 0) {
+      jira = issue_key[1];
+    } else {
+      jira = null;
+    }
+  }
+
+  // On-premise
+  url = document.getElementsByName('ajs-base-url');
+  if (typeof(url) != 'undefined' && url.length > 0) {
+    url = url[0].getAttribute('content');
+  } else {
+    url = null;
+  }
+
+  // Switch to cloud Jira
+  if (url == null) {
+    url = document.baseURI;
+    let base_url = url.match(/(https:\/\/[^/]+)/i);
+    if (typeof(base_url) != 'undefined' && base_url.length > 0) {
+      url = base_url[1];
+    } else {
+      url = null;
+    }
+  }
+
+  if (jira == null || url == null) {
     console.log("Not in Jira");
     return;
   }
 
-  var xhr = new XMLHttpRequest();
+  function handleEvent(e) {
+    window.location.reload();
+  }
+
+  function addListeners(xhr) {
+    xhr.addEventListener("loadend", handleEvent);
+  }
+
+  const xhr = new XMLHttpRequest();
+  addListeners(xhr);
+
   let endpoint = url + "/rest/api/2/issue/" + jira;
   xhr.open("PUT", endpoint);
 
@@ -32,13 +99,21 @@ function updateTicket(payload) {
     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
       // Request finished. Do processing here.
       // console.log(xhr.responseText);
+      
+    } else {
+      let text = null;
+      try {
+        text = JSON.parse(xhr.responseText);
+      } catch (e) {};
+
+      if (text != null && "errors" in text) {
+        alert(JSON.stringify(text["errors"]));
+      }
     }
   };
 
   json = JSON.stringify(payload);
   xhr.send(json);
-
-  window.location.reload();
 }
 
 QA.addEventListener("click", async () => {
@@ -93,6 +168,7 @@ Star.addEventListener("click", async () => {
 });
 
 Customer.addEventListener("click", async () => {
+  [work_category, feature_type] = await restore_options();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
@@ -108,14 +184,15 @@ Customer.addEventListener("click", async () => {
           ]
       },
       "fields" : {
-          "customfield_12770" : {"value" : "Development"},
-          "customfield_15470" : {"value" : "Customer Feature"}
+          [work_category] : {"value" : "Development"},
+          [feature_type] : {"value" : "Customer Feature"}
       }
     }]
   });
 });
 
 Infra.addEventListener("click", async () => {
+  [work_category, feature_type] = await restore_options();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
@@ -130,14 +207,15 @@ Infra.addEventListener("click", async () => {
           ]
       },
       "fields" : {
-          "customfield_12770" : {"value" : "Development"},
-          "customfield_15470" : {"value" : "Infrastructure/Framework"}
+          [work_category] : {"value" : "Development"},
+          [feature_type] : {"value" : "Infrastructure/Framework"}
       }
     }]
   });
 });
 
 Visible.addEventListener("click", async () => {
+  [work_category, feature_type] = await restore_options();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
@@ -153,14 +231,15 @@ Visible.addEventListener("click", async () => {
           ]
       },
       "fields" : {
-          "customfield_12770" : {"value" : "Development"},
-          "customfield_15470" : {"value" : "Refactoring Customer Visible"}
+          [work_category] : {"value" : "Development"},
+          [feature_type] : {"value" : "Refactoring Customer Visible"}
       }
     }]
   });
 });
 
 Invisible.addEventListener("click", async () => {
+  [work_category, feature_type] = await restore_options();
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   chrome.scripting.executeScript({
@@ -175,9 +254,17 @@ Invisible.addEventListener("click", async () => {
           ]
       },
       "fields" : {
-          "customfield_12770" : {"value" : "Development"},
-          "customfield_15470" : {"value" : "Refactoring Non-Customer Visible"}
+          [work_category] : {"value" : "Development"},
+          [feature_type] : {"value" : "Refactoring Non-Customer Visible"}
       }
     }]
   });
+});
+
+document.querySelector('#go-to-options').addEventListener('click', function() {
+  if (chrome.runtime.openOptionsPage) {
+    chrome.runtime.openOptionsPage();
+  } else {
+    window.open(chrome.runtime.getURL('options.html'));
+  }
 });

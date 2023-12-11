@@ -1,47 +1,32 @@
-let page = document.getElementById("buttonDiv");
-let selectedClassName = "current";
-const presetButtonColors = ["#3aa757", "#e8453c", "#f9bb2d", "#4688f1"];
+// Saves options to chrome.storage
+const saveOptions = () => {
+  const work_category = document.getElementById('work_category').value;
+  const feature_type = document.getElementById('feature_type').value;
 
-// Reacts to a button click by marking marking the selected button and saving
-// the selection
-function handleButtonClick(event) {
-  // Remove styling from the previously selected color
-  let current = event.target.parentElement.querySelector(
-    `.${selectedClassName}`
-  );
-  if (current && current !== event.target) {
-    current.classList.remove(selectedClassName);
-  }
-
-  // Mark the button as selected
-  let color = event.target.dataset.color;
-  event.target.classList.add(selectedClassName);
-  chrome.storage.sync.set({ color });
-}
-
-// Add a button to the page for each supplied color
-function constructOptions(buttonColors) {
-  chrome.storage.sync.get("color", (data) => {
-    let currentColor = data.color;
-
-    // For each color we were provided…
-    for (let buttonColor of buttonColors) {
-      // …crate a button with that color…
-      let button = document.createElement("button");
-      button.dataset.color = buttonColor;
-      button.style.backgroundColor = buttonColor;
-
-      // …mark the currently selected color…
-      if (buttonColor === currentColor) {
-        button.classList.add(selectedClassName);
-      }
-
-      // …and register a listener for when that button is clicked
-      button.addEventListener("click", handleButtonClick);
-      page.appendChild(button);
+  chrome.storage.sync.set(
+    { workCategory : work_category, featureType : feature_type },
+    () => {
+      // Update status to let user know options were saved.
+      const status = document.getElementById('status');
+      status.textContent = 'Options saved.';
+      setTimeout(() => {
+        status.textContent = '';
+      }, 750);
     }
-  });
-}
+  );
+};
 
-// Initialize the page by constructing the color options
-constructOptions(presetButtonColors);
+// Restores select box and checkbox state using the preferences
+// stored in chrome.storage.
+const restoreOptions = () => {
+  chrome.storage.sync.get(
+    { workCategory: "customfield_10204", featureType: "customfield_10205" },
+    (items) => {
+      document.getElementById('work_category').value = items.workCategory;
+      document.getElementById('feature_type').value = items.featureType;
+    }
+  );
+};
+
+document.addEventListener('DOMContentLoaded', restoreOptions);
+document.getElementById('save').addEventListener('click', saveOptions);
