@@ -25,9 +25,9 @@ function updateTicket(payload) {
   // On-premise
   jira = document.getElementsByName('ajs-issue-key');
   if(typeof(jira) != 'undefined' && jira.length > 0) {
-    jira = jira[0];
+      jira = jira[0].getAttribute('content');
   } else {
-    jira = null;
+      jira = null;
   }
 
   // data-issue-key should be used when editing with in a filters window
